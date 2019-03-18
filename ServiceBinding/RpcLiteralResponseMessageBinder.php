@@ -79,7 +79,7 @@ class RpcLiteralResponseMessageBinder implements MessageBinderInterface
     {
         $hash = spl_object_hash($message);
         if (isset($this->messageRefs[$hash])) {
-            return $this->messageRefs[$hash];
+            return clone $this->messageRefs[$hash];
         }
 
         $this->messageRefs[$hash] = $message;
@@ -88,6 +88,7 @@ class RpcLiteralResponseMessageBinder implements MessageBinderInterface
             throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, get_class($message)));
         }
 
+        $message = clone $message;
         $messageBinder = new MessageBinder($message);
         foreach ($this->typeRepository->getType($phpType)->all() as $type) {
             $property = $type->getName();
